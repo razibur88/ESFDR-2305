@@ -6,7 +6,9 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../slice/productSlice";
 
-const Post = ({allPage,cateFilter,activeMulti}) => {
+const Post = ({allPage,cateFilter,activeMulti,brandCategory}) => {
+  
+  
   let [filterShow, setFilterShow] = useState([])
   let [count, setCount] = useState(true)
 
@@ -35,7 +37,60 @@ const Post = ({allPage,cateFilter,activeMulti}) => {
 
   return (
     <>
-    {cateFilter.length > 0 ? 
+    {brandCategory.length > 0 ?
+    <div className="flex justify-between flex-wrap">
+    {brandCategory.map((item)=>(
+    <div className="w-[32%]">
+    <Link to={`/shop/${item.id}`}>
+    <div className="relative group">
+    <img src={item.thumbnail} alt="" />
+    <div className="absolute bottom-0 left-0 w-full bg-[#F5F5F5] duration-300 ease-in-out px-5 h-[0px] overflow-hidden group-hover:h-[120px] flex items-center justify-end">
+      <div className="">
+        <div className="">
+          <ul className="flex items-center justify-end gap-x-2">
+            <li className="font-sans text-[16px] font-normal">
+              Add to Wish List
+            </li>
+            <li>
+              <FaHeart />
+            </li>
+          </ul>
+        </div>
+        <div className="">
+          <ul className="flex items-center justify-end gap-x-2">
+            <li className="font-sans text-[16px] font-normal">Compare</li>
+            <li>
+              <IoGitCompare />
+            </li>
+          </ul>
+        </div>
+        <div className="">
+          <ul className="flex items-center justify-end gap-x-2">
+            <li className="font-sans text-[16px] font-normal">
+              Add to Cart
+            </li>
+            <li>
+              <FaCartPlus />
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className="pt-3 px-2">
+    <div className="flex justify-between items-center">
+      <h2>{item.title}</h2>
+      <p>${item.price}</p>
+    </div>
+  </div>
+    </Link>
+    </div>
+    ))}
+    </div>
+    :
+
+    
+    filterShow.length > 0 ? 
     <>
       <div className="flex justify-between flex-wrap">
         {filterShow.map((item)=>(

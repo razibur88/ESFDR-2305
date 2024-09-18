@@ -10,8 +10,7 @@ const Error = () => {
             <p className="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Something's missing.</p>
             <p className="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Sorry, we can't find that page. You'll find lots to explore on the home page. </p>
             <Link to="/">
-            
-            <button className="w-[250px] h-[50px] border-2 border-[#262626] font-sans font-normal hover:bg-[#262626] hover:text-white duration-300 ease-in-out ml-5">Back to Homepage</button>
+              <button className="w-[250px] h-[50px] border-2 border-[#262626] font-sans font-normal hover:bg-[#262626] hover:text-white duration-300 ease-in-out ml-5">Back to Homepage</button>
             </Link>
         </div>   
         </div>

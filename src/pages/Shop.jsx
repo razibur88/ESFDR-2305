@@ -19,6 +19,10 @@ const Shop = () => {
   let [perPage, setPerPage] = useState(6)
   let [activeMulti, setActiveMulti] = useState("")
   let [cateFilter, setCateFilter] = useState([])
+  let [lowPrice, setLowPrice] = useState([])
+  let [highPrice, setHighPrice] = useState([])
+  let [brandShow, setBrandShow] = useState([])
+  let [brandCategory, setBrandCategory] = useState([])
   let lastPage = currentPage * perPage
   let firstPage = lastPage - perPage
   let allPage = data.slice(firstPage, lastPage)
@@ -52,6 +56,7 @@ const Shop = () => {
 
   useEffect(()=>{
     setCategory([...new Set(data.map((item)=> item.category))])
+    setBrandShow([...new Set(data.map((item)=> item.brand))])
   },[data])
 
   let handleCategory = (citem) =>{
@@ -65,6 +70,26 @@ const Shop = () => {
 
   let handleActive = ()=>{
     setActiveMulti("active");
+  }
+
+  let handlePrice = (value)=>{
+    setLowPrice(value.low);
+    setHighPrice(value.high);
+
+    let priceFilter = data.filter((item)=> item.price > value.low && item.price < value.high)
+    if(priceFilter.length > 0){
+      setCateFilter(priceFilter)
+    } else{
+      setCateFilter("")
+    }
+      
+   
+  }
+
+
+  let handleBrand = (bitem) =>{
+    let brandFilter = data.filter((item)=> item.brand == bitem) 
+    setCateFilter(brandFilter)
   }
   
   
@@ -93,6 +118,27 @@ const Shop = () => {
               </ul>
               }
             </div>
+              <div className="">
+                <h2 className="font-sans text-[24px] font-bold">Price</h2>
+                <ul>
+                  <li onClick={()=>handlePrice({low:0, high:10})}>$0 - $9</li>
+                  <li onClick={()=>handlePrice({low:10, high:19})}>$10 - $19</li>
+                  <li onClick={()=>handlePrice({low:20, high:29})}>$20 - $29</li>
+                  <li onClick={()=>handlePrice({low:30, high:39})}>$30 - $39</li>
+                  <li onClick={()=>handlePrice({low:40, high:59})}>$40 - $59</li>
+                </ul>
+              </div>
+
+              <div className="">
+                <h2 className="font-sans text-[24px] font-bold">Brand</h2>
+                <ul>
+                  {brandShow.map((item)=>(
+                  <li onClick={()=>handleBrand(item)} className="font-sans text-[18px] font-normal capitalize">{item}</li>
+                  ))}
+                </ul>
+              </div>
+
+
           </div>
         </div>
         <div className="w-[80%]">
@@ -129,8 +175,15 @@ const Shop = () => {
                     </div>
                 </div>
               </div>
-              <Post allPage={allPage} cateFilter={cateFilter} activeMulti={activeMulti}/>
-              <Pagination pageNumber={pageNumber} paginate={paginate} next={next} prev={prev} currentPage={currentPage}/>
+                  {cateFilter ?
+                  <Post allPage={allPage} cateFilter={cateFilter && cateFilter} activeMulti={activeMulti} brandCategory={brandCategory}/>
+                  :
+                  <h2>Does not Price </h2>
+                  }
+              
+            
+              <Pagination pageNumber={pageNumber} paginate={paginate} next={next} prev={prev} currentPage={currentPage} cateFilter={cateFilter}/>
+             
         </div>
       </Flex>
       </div>
