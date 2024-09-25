@@ -120,7 +120,9 @@ const Cart = () => {
                 </div>
             </div>
             <div className="mt-[30px] lg:text-right">
+              <Link to="/checkout">
             <button type='submit' className='py-[16px] px-[25px] bg-black text-white font-dm-sans font-bold text-sm leading-[18px]'>Proceed to Checkout</button>
+              </Link>
           </div>
             </div>
         </div>

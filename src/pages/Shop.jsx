@@ -65,7 +65,7 @@ const Shop = () => {
   
   }
   let handleAllpage = ()=>{
-    setCateFilter("")
+    setCateFilter(data)
   }
 
   let handleActive = ()=>{
