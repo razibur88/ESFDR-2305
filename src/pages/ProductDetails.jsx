@@ -9,11 +9,11 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../components/slice/productSlice";
 
 const ProductDetails = () => {
-  let dispatch = useDispatch()
+  let dispatch = useDispatch();
   let productId = useParams();
   let [singleProduct, setSingleProduct] = useState({});
-  let [show, setShow] = useState(false)
-  let [rating, setRating] = useState(0)
+  let [show, setShow] = useState(false);
+  let [rating, setRating] = useState(0);
   let getId = () => {
     axios
       .get(`https://dummyjson.com/products/${productId.id}`)

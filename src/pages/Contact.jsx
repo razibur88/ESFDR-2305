@@ -1,15 +1,27 @@
 import React, { useState } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { getDatabase, push, ref, set } from "firebase/database";
+import { FallingLines } from "react-loader-spinner";
+import { Link, useNavigate } from "react-router-dom";
 const Contact = () => {
+  const db = getDatabase();
+  let navigate = useNavigate();
+
   const auth = getAuth();
   let [email, setEmail] = useState("");
-  let [fullname, setFullname] = useState("")
+  let [fullname, setFullname] = useState("");
   let [password, setPassword] = useState("");
+  let [condintion, setCondition] = useState(false);
+  let [show, setShow] = useState(false);
+  let [error, setError] = useState("");
 
-  let handleFullname = (e)=>{
-    setFullname(e.target.value)
-  }
+  let handleFullname = (e) => {
+    setFullname(e.target.value);
+  };
 
   let handleEmail = (e) => {
     setEmail(e.target.value);
@@ -20,17 +32,58 @@ const Contact = () => {
 
   let handleSubmit = (e) => {
     e.preventDefault();
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((user) => {
-        console.log(user, "done");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-       console.log(errorCode);
-       console.log(errorMessage);
-       
-      });
+    let emailRegex =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    let number = /^(?=.*[0-9])/;
+    let special = /^(?=.*[!@#$%^&*])/;
+    let lowerCase = /^(?=.*[a-z])/;
+    let upperCase = /^(?=.*[A-Z])/;
+    let mixMum = /^(?=.{8,})/;
+
+    if (!email) {
+      setShow(true);
+      setError("enter your Email");
+    } else if (!emailRegex.test(email)) {
+      setShow(true);
+      setError("please enter Vaild email");
+    } else if (!password) {
+      console.log("enter your Passwrod");
+    } else if (!number.test(password)) {
+      console.log("give a me number");
+    } else if (!lowerCase.test(password)) {
+      setShow("give a lowerCase");
+    } else if (!upperCase.test(password)) {
+      console.log("give a upperCase");
+    } else if (!special.test(password)) {
+      console.log("give a special");
+    } else if (!mixMum.test(password)) {
+      console.log("give a mixMum");
+    } else {
+      setCondition(true);
+      e.preventDefault();
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCreadential) => {
+          sendEmailVerification(auth.currentUser).then(() => {
+            set(ref(db, 'allusers/'+userCreadential.user.uid), {
+              username: fullname,
+              email: email,
+              password:password
+            });
+            setCondition(false)
+            navigate('/login')
+          });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+
+          if (errorCode.includes("auth/email-already-in-use")) {
+            setShow(true);
+            setError("email is already visiable");
+            setCondition(false);
+          }
+        });
+    }
   };
 
   return (
@@ -42,7 +95,7 @@ const Contact = () => {
               Create an account
             </h1>
             <form class="space-y-4 md:space-y-6" action="#">
-            <div>
+              <div>
                 <label
                   for="email"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -50,7 +103,6 @@ const Contact = () => {
                   Your Name
                 </label>
                 <input
-                  onChange={handleFullname}
                   type="text"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Enter Your Name"
@@ -73,6 +125,7 @@ const Contact = () => {
                   placeholder="name@company.com"
                   required=""
                 />
+                {show && <p className="text-red-800">{error}</p>}
               </div>
               <div>
                 <label
@@ -117,21 +170,34 @@ const Contact = () => {
                   </label>
                 </div>
               </div>
-              <button
-                onClick={handleSubmit}
-                type="submit"
-                class="w-full text-white bg-[tomato] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-              >
-                Create an account
-              </button>
+
+              {condintion ? (
+                <button>
+                  <FallingLines
+                    color="red"
+                    width="100"
+                    visible={true}
+                    ariaLabel="falling-circles-loading"
+                  />
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmit}
+                  type="submit"
+                  class="w-full text-white bg-[tomato] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                >
+                  Create an account
+                </button>
+              )}
+
               <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
-                <a
-                  href="#"
-                  class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                <Link
+                  to="/login"
+                  className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Login here
-                </a>
+                </Link>
               </p>
             </form>
           </div>

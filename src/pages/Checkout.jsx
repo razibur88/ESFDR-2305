@@ -83,10 +83,6 @@ const Checkout = () => {
               <dd class="text-base font-medium text-green-500">{totalQuntity}</dd>
             </dl>
 
-          
-
-         
-
             <dl class="flex items-center justify-between gap-4 py-3">
               <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
               <dd class="text-base font-bold text-gray-900 dark:text-white">${totalPrice}</dd>

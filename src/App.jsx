@@ -15,6 +15,7 @@ import Error from "./pages/Error";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Journal from "./pages/Journal";
+import Login from "./pages/Login";
 function App() {
   let router = createBrowserRouter(createRoutesFromElements(
     <Route element={<Layout/>}>
@@ -24,6 +25,7 @@ function App() {
       <Route path="/cart" element={<Cart/>}></Route>
       <Route path="/checkout" element={<Checkout/>}></Route>
       <Route path="/contact" element={<Contact/>}></Route>
+      <Route path="/login" element={<Login/>}></Route>
       <Route path="/about" element={<About/>}></Route>
       <Route path="/journal" element={<Journal/>}></Route>
       <Route path="*" element={<Error/>}></Route>
